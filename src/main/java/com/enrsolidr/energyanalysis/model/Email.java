@@ -13,7 +13,6 @@ import java.util.Properties;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "domain")
 public class Email {
 
     public static final org.slf4j.Logger logger = LoggerFactory.getLogger(EnergyController.class);

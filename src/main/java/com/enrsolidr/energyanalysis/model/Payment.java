@@ -13,8 +13,10 @@ import java.util.Properties;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(collection = "payment")
 public class Payment {
-    private String token;
+    private User user;
     private Integer amount;
+    private String token;
 }
 

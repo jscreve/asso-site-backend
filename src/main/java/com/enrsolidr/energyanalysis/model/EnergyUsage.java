@@ -13,7 +13,7 @@ import java.util.Properties;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "domain")
+@Document(collection = "energyUsage")
 public class EnergyUsage {
 
     public static final org.slf4j.Logger logger = LoggerFactory.getLogger(EnergyController.class);
