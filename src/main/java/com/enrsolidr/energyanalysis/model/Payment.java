@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.Properties;
 
 @Data
@@ -15,8 +16,12 @@ import java.util.Properties;
 @AllArgsConstructor
 @Document(collection = "payment")
 public class Payment {
+    @Id
+    private String id;
+
     private User user;
     private Integer amount;
     private String token;
+    private Date paymentDate;
 }
 
