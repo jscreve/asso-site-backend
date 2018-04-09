@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,13 +44,8 @@ public class ReceiptService {
 
     private PDDocument pdfDocument;
 
-    public static void main(String[] args) throws IOException {
-        ReceiptService receiptService = new ReceiptService();
-        receiptService.sendReceipts();
-    }
-
-    public void sendReceipts() throws IOException {
-        Map<Payment, String> paymentReceipts = getReceipts();
+    public void sendReceipts(String year) throws IOException, ParseException {
+        Map<Payment, String> paymentReceipts = getReceipts(year);
         Iterator<Map.Entry<Payment, String>> iterator = paymentReceipts.entrySet().iterator();
         while(iterator.hasNext()) {
             Map.Entry<Payment, String> entry = iterator.next();
@@ -59,8 +55,10 @@ public class ReceiptService {
         }
     }
 
-    private Map<Payment, String> getReceipts() throws IOException {
-        List<Payment> payments = paymentService.getAllPayments();
+    private Map<Payment, String> getReceipts(String year) throws IOException, ParseException {
+        String fromDate = "01/01/" + year;
+        String toDate = "31/12/" + year;
+        List<Payment> payments = paymentService.getPaymentsByDate(dateFormat.parse(fromDate), dateFormat.parse(toDate));
         List<String> files = generatePdfs(payments);
 
         Iterator<Payment> paymentsIterator = payments.iterator();

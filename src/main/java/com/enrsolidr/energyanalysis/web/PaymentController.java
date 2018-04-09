@@ -44,7 +44,7 @@ public class PaymentController {
     }
 
     @RequestMapping(value = "/receipt", method = RequestMethod.GET)
-    public void generateReceipt() throws Exception {
-        receiptService.sendReceipts();
+    public void generateReceipt(@RequestParam(value = "year") String year) throws Exception {
+        receiptService.sendReceipts(year);
     }
 }
