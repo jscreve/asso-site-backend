@@ -24,9 +24,9 @@ public class ReceiptService {
 
     private static final String inputFile = "/templates/recu.pdf";
 
-    private static final String receiptMailObject = "receipt";
+    private static final String receiptMailObject = "Reçu fiscal Watt4All";
 
-    private static final String receiptMailText = "receipt text";
+    private static final String receiptMailText = "Bonjour, voici votre reçu fiscal pour votre don à Watt4All. \nMerci pour tout !";
 
     @Value("${receipt.destinationFolder}")
     private String destinationFolder;
