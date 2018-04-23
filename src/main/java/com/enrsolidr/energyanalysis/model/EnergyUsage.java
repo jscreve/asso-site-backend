@@ -92,6 +92,10 @@ public class EnergyUsage {
         return energyPerYear;
     }
 
+    public int getAverageEnergy(int totalKWh) {
+        return totalKWh / homeDataModel.getAppartmentSize();
+    }
+
 
 }
 

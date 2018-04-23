@@ -13,4 +13,5 @@ import javax.validation.constraints.NotNull;
 public class EnergyUsageResource extends ResourceSupport {
     private int electricEnergyUsage = 0;
     private int gazEnergyUsage = 0;
+    private int averageEnergy = 0;
 }

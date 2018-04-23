@@ -19,8 +19,11 @@ public class EnergyUsageResourceAssembler extends ResourceAssemblerSupport<Energ
     public EnergyUsageResource toResource(EnergyUsage entity) {
         EnergyUsageResource resource = createResourceWithId(entity.getId(), entity);
         resource.add(linkTo(methodOn(EnergyController.class).computeEnergyUsage(entity)).withSelfRel());
-        resource.setElectricEnergyUsage(entity.getEstimatedElectrickWhPerYear());
-        resource.setGazEnergyUsage(entity.getEstimatedGazkWhPerYear());
+        int eleckWh = entity.getEstimatedElectrickWhPerYear();
+        resource.setElectricEnergyUsage(eleckWh);
+        int gazkWh = entity.getEstimatedGazkWhPerYear();
+        resource.setGazEnergyUsage(gazkWh);
+        resource.setAverageEnergy(entity.getAverageEnergy(eleckWh + gazkWh));
         return resource;
     }
 
