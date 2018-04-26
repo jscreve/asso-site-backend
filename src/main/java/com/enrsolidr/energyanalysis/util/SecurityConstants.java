@@ -10,5 +10,5 @@ public class SecurityConstants {
     public static final String ENERGY_USAGE = "/energy/usage";
     public static final String MAIL_SEND = "/mail/send";
     public static final String PAYMENT_CHARGE = "/payment/charge";
-    public static final String[] ALLOWED_URLS = new String[]{"/users/sign-up", "/users/generate-token", "/energy/usage", "/mail/send", "/payment/charge"};
+    public static final String[] ALLOWED_URLS = new String[]{"/users/sign-up", "/users/generate-token", "/energy/usage", "/mail/send", "/payment/charge", "/payment/charge/existingmember", "/payment/charge/newmember"};
 }

@@ -1,7 +1,6 @@
 package com.enrsolidr.energyanalysis.services;
 
-import com.enrsolidr.energyanalysis.model.Payment;
-import com.enrsolidr.energyanalysis.repository.PaymentRepository;
+import com.enrsolidr.energyanalysis.entity.Payment;
 import com.ibm.icu.text.RuleBasedNumberFormat;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;

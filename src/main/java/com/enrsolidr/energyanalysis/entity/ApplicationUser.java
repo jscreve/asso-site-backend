@@ -1,4 +1,4 @@
-package com.enrsolidr.energyanalysis.model;
+package com.enrsolidr.energyanalysis.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

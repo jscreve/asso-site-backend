@@ -1,8 +1,6 @@
 package com.enrsolidr.energyanalysis.services;
 
-import com.enrsolidr.energyanalysis.model.EnergyUsage;
-import com.enrsolidr.energyanalysis.model.Payment;
-import com.enrsolidr.energyanalysis.repository.EnergyUsageRepository;
+import com.enrsolidr.energyanalysis.entity.Payment;
 import com.enrsolidr.energyanalysis.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

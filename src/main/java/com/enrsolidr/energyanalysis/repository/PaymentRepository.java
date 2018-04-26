@@ -1,6 +1,6 @@
 package com.enrsolidr.energyanalysis.repository;
 
-import com.enrsolidr.energyanalysis.model.Payment;
+import com.enrsolidr.energyanalysis.entity.Payment;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

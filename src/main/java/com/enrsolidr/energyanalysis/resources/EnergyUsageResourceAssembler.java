@@ -2,7 +2,7 @@ package com.enrsolidr.energyanalysis.resources;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-import com.enrsolidr.energyanalysis.model.EnergyUsage;
+import com.enrsolidr.energyanalysis.entity.EnergyUsage;
 import com.enrsolidr.energyanalysis.web.EnergyController;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 

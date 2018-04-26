@@ -1,6 +1,6 @@
 package com.enrsolidr.energyanalysis.services;
 
-import com.enrsolidr.energyanalysis.model.EnergyUsage;
+import com.enrsolidr.energyanalysis.entity.EnergyUsage;
 import com.enrsolidr.energyanalysis.repository.EnergyUsageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

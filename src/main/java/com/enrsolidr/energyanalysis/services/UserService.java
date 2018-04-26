@@ -1,6 +1,6 @@
 package com.enrsolidr.energyanalysis.services;
 
-import com.enrsolidr.energyanalysis.model.ApplicationUser;
+import com.enrsolidr.energyanalysis.entity.ApplicationUser;
 import com.enrsolidr.energyanalysis.repository.ApplicationUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

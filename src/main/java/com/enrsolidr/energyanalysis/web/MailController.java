@@ -1,11 +1,7 @@
 package com.enrsolidr.energyanalysis.web;
 
 import com.enrsolidr.energyanalysis.model.Email;
-import com.enrsolidr.energyanalysis.model.EnergyUsage;
-import com.enrsolidr.energyanalysis.resources.EnergyUsageResource;
-import com.enrsolidr.energyanalysis.resources.EnergyUsageResourceAssembler;
 import com.enrsolidr.energyanalysis.services.EmailService;
-import com.enrsolidr.energyanalysis.services.EnergyUsageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.enrsolidr.energyanalysis.web;
 
-import com.enrsolidr.energyanalysis.model.ApplicationUser;
+import com.enrsolidr.energyanalysis.entity.ApplicationUser;
 import com.enrsolidr.energyanalysis.model.AuthToken;
 import com.enrsolidr.energyanalysis.repository.ApplicationUserRepository;
 import com.enrsolidr.energyanalysis.services.UserService;
@@ -12,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 

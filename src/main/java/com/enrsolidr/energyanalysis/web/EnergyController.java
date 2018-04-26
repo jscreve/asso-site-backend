@@ -1,6 +1,6 @@
 package com.enrsolidr.energyanalysis.web;
 
-import com.enrsolidr.energyanalysis.model.EnergyUsage;
+import com.enrsolidr.energyanalysis.entity.EnergyUsage;
 import com.enrsolidr.energyanalysis.resources.EnergyUsageResource;
 import com.enrsolidr.energyanalysis.resources.EnergyUsageResourceAssembler;
 import com.enrsolidr.energyanalysis.services.EnergyUsageService;

@@ -1,6 +1,6 @@
 package com.enrsolidr.energyanalysis.repository;
 
-import com.enrsolidr.energyanalysis.model.ApplicationUser;
+import com.enrsolidr.energyanalysis.entity.ApplicationUser;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

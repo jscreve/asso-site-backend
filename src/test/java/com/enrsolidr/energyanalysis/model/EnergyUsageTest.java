@@ -1,5 +1,7 @@
 package com.enrsolidr.energyanalysis.model;
 
+import com.enrsolidr.energyanalysis.entity.EnergyUsage;
+
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;

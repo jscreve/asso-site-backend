@@ -1,17 +1,15 @@
 package com.enrsolidr.energyanalysis.web;
 
-import com.enrsolidr.energyanalysis.model.EnergyUsage;
+import com.enrsolidr.energyanalysis.entity.EnergyUsage;
 import com.enrsolidr.energyanalysis.resources.EnergyUsageResource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
