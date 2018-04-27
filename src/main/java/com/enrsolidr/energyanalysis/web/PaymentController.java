@@ -6,18 +6,22 @@ import com.enrsolidr.energyanalysis.exceptions.AlreadyPaidException;
 import com.enrsolidr.energyanalysis.exceptions.UserAlreadyExistException;
 import com.enrsolidr.energyanalysis.exceptions.UserNotFoundException;
 import com.enrsolidr.energyanalysis.model.TransactionType;
-import com.enrsolidr.energyanalysis.resources.MemberPaymentResource;
-import com.enrsolidr.energyanalysis.resources.PaymentResource;
-import com.enrsolidr.energyanalysis.resources.SimplePaymentResource;
+import com.enrsolidr.energyanalysis.resources.*;
 import com.enrsolidr.energyanalysis.services.MemberService;
 import com.enrsolidr.energyanalysis.services.PaymentService;
 import com.enrsolidr.energyanalysis.services.ReceiptService;
 import com.stripe.model.Charge;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +29,8 @@ import java.util.Optional;
 public class PaymentController {
 
     private StripeClient stripeClient;
+
+    public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     @Autowired
     PaymentService paymentService;
@@ -43,12 +49,13 @@ public class PaymentController {
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
     @RequestMapping(value = "/charge", method = RequestMethod.POST)
-    public Charge chargeCard(@RequestBody PaymentResource paymentResource) throws Exception {
-        return makeTransactionFromResource(paymentResource);
+    public ResponseEntity<Charge> chargeCard(@RequestBody PaymentResource paymentResource) throws Exception {
+        Charge charge = makeTransactionFromResource(paymentResource);
+        return new ResponseEntity(charge, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/charge/existingmember", method = RequestMethod.POST)
-    public Charge chargeExistingMember(@RequestBody SimplePaymentResource paymentResource) throws Exception {
+    public ResponseEntity<Charge> chargeExistingMember(@RequestBody SimplePaymentResource paymentResource) throws Exception {
         //ADHESION
         //fetch member
         Optional<Member> member  = memberService.getMemberByEmail(paymentResource.getEmail());
@@ -63,11 +70,11 @@ public class PaymentController {
 
         //update member ship
         memberService.setMemberPaid(member.get().getUser().getEmail(), simpleDateFormat.format(new Date()));
-        return charge;
+        return new ResponseEntity(charge, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/charge/newmember", method = RequestMethod.POST)
-    public Charge chargeNewMember(@RequestBody PaymentResource paymentResource) throws Exception {
+    public ResponseEntity<Charge> chargeNewMember(@RequestBody PaymentResource paymentResource) throws Exception {
         //fetch member
         if(memberService.getMemberByEmail(paymentResource.getUser().getEmail()).isPresent()) {
             throw new UserAlreadyExistException();
@@ -88,7 +95,7 @@ public class PaymentController {
         member.getMemberPayments().add(simpleDateFormat.format(new Date()));
         memberService.addMember(member);
 
-        return charge;
+        return new ResponseEntity(charge, HttpStatus.CREATED);
     }
 
     private Charge makeTransactionFromResource(PaymentResource paymentResource) throws Exception {
@@ -126,7 +133,20 @@ public class PaymentController {
     }
 
     @RequestMapping(value = "/receipt", method = RequestMethod.GET)
-    public void generateReceipt(@RequestParam(value = "year") String year) throws Exception {
+    public ResponseEntity<?> generateReceipt(@RequestParam(value = "year") String year) throws Exception {
         receiptService.sendReceipts(year);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/fetch", method = RequestMethod.GET)
+    public ResponseEntity<List<OutputPaymentResource>> fetchAll() {
+        logger.info("Get payments : {}");
+
+        List<Payment> payments = paymentService.getAllPayments();
+        Collections.reverse(payments);
+
+        OutputPaymentResourceAssembler resourceAssembler = new OutputPaymentResourceAssembler(PaymentController.class, OutputPaymentResource.class);
+        List<OutputPaymentResource> resources = resourceAssembler.toResources(payments);
+        return new ResponseEntity<List<OutputPaymentResource>>(resources, HttpStatus.OK);
     }
 }

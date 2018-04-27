@@ -5,6 +5,9 @@ import com.enrsolidr.energyanalysis.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.ResourceSupport;
+
+import java.util.Date;
 
 @Data
 @NoArgsConstructor

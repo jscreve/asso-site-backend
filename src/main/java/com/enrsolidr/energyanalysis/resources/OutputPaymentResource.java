@@ -10,10 +10,11 @@ import org.springframework.hateoas.ResourceSupport;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SimplePaymentResource extends ResourceSupport {
-    private String email;
+public class OutputPaymentResource extends ResourceSupport {
+    private User user;
     private Integer amount;
-    private String token;
+    private String paymentDate;
+    private TransactionType transactionType;
 }
 
 
