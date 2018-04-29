@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/energy")
 public class EnergyController {
 
-    public static final Logger logger = LoggerFactory.getLogger(EnergyController.class);
+    private static final Logger logger = LoggerFactory.getLogger(EnergyController.class);
 
     @Autowired
     EnergyUsageService energyUsageService;

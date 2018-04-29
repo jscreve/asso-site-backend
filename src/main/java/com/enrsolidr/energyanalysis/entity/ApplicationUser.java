@@ -15,7 +15,7 @@ import javax.persistence.Id;
 @Document(collection = "user")
 public class ApplicationUser {
     @Id
-    private long id;
+    private String id;
     @Column
     private String username;
     @Column

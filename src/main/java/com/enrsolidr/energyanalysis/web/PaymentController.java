@@ -30,7 +30,7 @@ public class PaymentController {
 
     private StripeClient stripeClient;
 
-    public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
+    private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     @Autowired
     PaymentService paymentService;

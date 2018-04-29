@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/mail")
 public class MailController {
 
-    public static final Logger logger = LoggerFactory.getLogger(MailController.class);
+    private static final Logger logger = LoggerFactory.getLogger(MailController.class);
 
     @Autowired
     EmailService emailService;

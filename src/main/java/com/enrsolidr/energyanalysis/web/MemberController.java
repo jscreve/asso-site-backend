@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/member")
 public class MemberController {
 
-    public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
+    private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
