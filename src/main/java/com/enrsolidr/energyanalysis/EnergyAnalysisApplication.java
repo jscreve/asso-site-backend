@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.List;
+
 @SpringBootApplication
 public class EnergyAnalysisApplication {
 
@@ -32,16 +34,18 @@ public class EnergyAnalysisApplication {
 		return new CommandLineRunner() {
 			@Override
 			public void run(String... arg0) throws Exception {
-				insertUser();
+				insertOrUpdateUser();
 			}
 
-			private void insertUser() {
-				if(applicationUserRepository.findByUsername(mongoDBUser).isEmpty()) {
-					ApplicationUser applicationUser = new ApplicationUser();
-					applicationUser.setUsername(mongoDBUser);
-					applicationUser.setPassword(bCryptPasswordEncoder().encode(mongoDBPassword));
-					applicationUserRepository.save(applicationUser);
+			private void insertOrUpdateUser() {
+				List<ApplicationUser> mongoDbUser;
+				if(!(mongoDbUser = applicationUserRepository.findByUsername(mongoDBUser)).isEmpty()) {
+					applicationUserRepository.delete(mongoDbUser.get(0));
 				}
+				ApplicationUser applicationUser = new ApplicationUser();
+				applicationUser.setUsername(mongoDBUser);
+				applicationUser.setPassword(bCryptPasswordEncoder().encode(mongoDBPassword));
+				applicationUserRepository.save(applicationUser);
 			}
 		};
 	}
