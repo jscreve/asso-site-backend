@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,4 +23,6 @@ public class ApplicationUser {
     @Column
     //@JsonIgnore
     private String password;
+
+    private List<String> authorities = Collections.singletonList("ROLE_ADMIN");
 }
