@@ -70,6 +70,6 @@ public class ApplicationUserController {
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
                 .compact();
-        return ResponseEntity.ok(new AuthToken(token, expiresAt));
+        return ResponseEntity.ok(new AuthToken(token, expiresAt, user.getAuthorities()));
     }
 }
