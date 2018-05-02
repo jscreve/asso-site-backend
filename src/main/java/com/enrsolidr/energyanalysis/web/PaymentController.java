@@ -6,7 +6,10 @@ import com.enrsolidr.energyanalysis.exceptions.AlreadyPaidException;
 import com.enrsolidr.energyanalysis.exceptions.UserAlreadyExistException;
 import com.enrsolidr.energyanalysis.exceptions.UserNotFoundException;
 import com.enrsolidr.energyanalysis.model.TransactionType;
-import com.enrsolidr.energyanalysis.resources.*;
+import com.enrsolidr.energyanalysis.resources.OutputPaymentResource;
+import com.enrsolidr.energyanalysis.resources.OutputPaymentResourceAssembler;
+import com.enrsolidr.energyanalysis.resources.PaymentResource;
+import com.enrsolidr.energyanalysis.resources.SimplePaymentResource;
 import com.enrsolidr.energyanalysis.services.MemberService;
 import com.enrsolidr.energyanalysis.services.PaymentService;
 import com.enrsolidr.energyanalysis.services.ReceiptService;
@@ -14,8 +17,10 @@ import com.stripe.model.Charge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -23,6 +28,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.enrsolidr.energyanalysis.util.SecurityConstants.MEMBER_ROLE;
 
 @RestController
 @RequestMapping("/payment")
@@ -46,6 +53,12 @@ public class PaymentController {
         this.stripeClient = stripeClient;
     }
 
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
     @RequestMapping(value = "/charge", method = RequestMethod.POST)
@@ -54,7 +67,7 @@ public class PaymentController {
         return new ResponseEntity(charge, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/charge/existingmember", method = RequestMethod.POST)
+    @RequestMapping(value = "/charge/member", method = RequestMethod.POST)
     public ResponseEntity<Charge> chargeExistingMember(@RequestBody SimplePaymentResource paymentResource) throws Exception {
         //ADHESION
         //fetch member
@@ -76,7 +89,8 @@ public class PaymentController {
     @RequestMapping(value = "/charge/newmember", method = RequestMethod.POST)
     public ResponseEntity<Charge> chargeNewMember(@RequestBody PaymentResource paymentResource) throws Exception {
         //fetch member
-        if(memberService.getMemberByEmail(paymentResource.getUser().getEmail()).isPresent()) {
+        if (memberService.getMemberByEmail(paymentResource.getUser().getEmail()).isPresent() ||
+                memberService.getMemberByUsername(paymentResource.getUsername()).isPresent()) {
             throw new UserAlreadyExistException();
         }
         //try transaction
@@ -89,9 +103,11 @@ public class PaymentController {
         Charge charge = this.stripeClient.chargeCreditCard(payment.getToken(), payment.getAmount());
         paymentService.savePayment(payment);
 
-        //create member
         Member member = new Member();
         member.setUser(paymentResource.getUser());
+        member.setUsername(paymentResource.getUsername());
+        member.setPassword(bCryptPasswordEncoder().encode(paymentResource.getPassword()));
+        member.setAuthorities(Collections.singletonList(MEMBER_ROLE));
         member.getMemberPayments().add(simpleDateFormat.format(new Date()));
         memberService.addMember(member);
 
@@ -106,7 +122,7 @@ public class PaymentController {
         return charge;
     }
 
-    private Charge makeTransactionFromSimpleResourceAndMember(SimplePaymentResource paymentResource, Member member) throws Exception {
+    public Charge makeTransactionFromSimpleResourceAndMember(SimplePaymentResource paymentResource, Member member) throws Exception {
         //try transaction
         Payment payment = fromSimplePaymentResourceAndMember(paymentResource, member);
         Charge charge  = this.stripeClient.chargeCreditCard(payment.getToken(), payment.getAmount());

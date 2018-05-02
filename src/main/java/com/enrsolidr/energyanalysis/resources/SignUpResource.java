@@ -8,10 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentResource {
+public class SignUpResource {
     private User user;
-    private Integer amount;
-    private String token;
     private String username;
     private String password;
 }

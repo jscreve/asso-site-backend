@@ -1,8 +1,7 @@
 package com.enrsolidr.energyanalysis;
 
-import com.enrsolidr.energyanalysis.entity.ApplicationUser;
-import com.enrsolidr.energyanalysis.repository.ApplicationUserRepository;
-import com.enrsolidr.energyanalysis.web.EnergyController;
+import com.enrsolidr.energyanalysis.entity.Member;
+import com.enrsolidr.energyanalysis.repository.MemberRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Collections;
 import java.util.List;
+
+import static com.enrsolidr.energyanalysis.util.SecurityConstants.ADMIN_ROLE;
 
 @SpringBootApplication
 public class EnergyAnalysisApplication {
@@ -35,26 +37,27 @@ public class EnergyAnalysisApplication {
 	private String mongoDBPassword;
 
 	@Bean
-	CommandLineRunner init(final ApplicationUserRepository applicationUserRepository) {
+    CommandLineRunner init(final MemberRepository memberRepository) {
 		return new CommandLineRunner() {
 			@Override
 			public void run(String... arg0) throws Exception {
-				insertOrUpdateUser();
+                insertOrUpdateAdminUser();
 			}
 
-			private void insertOrUpdateUser() {
+            private void insertOrUpdateAdminUser() {
 				try {
-					List<ApplicationUser> mongoDbUserList;
-					if (!(mongoDbUserList = applicationUserRepository.findByUsername(mongoDBUser)).isEmpty()) {
+                    List<Member> mongoDbUserList;
+                    if (!(mongoDbUserList = memberRepository.findByUsername(mongoDBUser)).isEmpty()) {
 						logger.info(mongoDbUserList.get(0).getUsername());
 						logger.info(mongoDbUserList.get(0).getPassword());
 						logger.info("Id : " + mongoDbUserList.get(0).getId());
-						applicationUserRepository.deleteAll(mongoDbUserList);
+                        memberRepository.deleteAll(mongoDbUserList);
 					}
-					ApplicationUser applicationUser = new ApplicationUser();
-					applicationUser.setUsername(mongoDBUser);
-					applicationUser.setPassword(bCryptPasswordEncoder().encode(mongoDBPassword));
-					applicationUserRepository.save(applicationUser);
+                    Member member = new Member();
+                    member.setUsername(mongoDBUser);
+                    member.setPassword(bCryptPasswordEncoder().encode(mongoDBPassword));
+                    member.setAuthorities(Collections.singletonList(ADMIN_ROLE));
+                    memberRepository.save(member);
 				} catch(Exception ex) {
 					logger.error("error at startup", ex);
 				}

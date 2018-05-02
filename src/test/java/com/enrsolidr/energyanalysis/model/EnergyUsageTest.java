@@ -4,7 +4,7 @@ import com.enrsolidr.energyanalysis.entity.EnergyUsage;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EnergyUsageTest {
 
@@ -21,6 +21,6 @@ class EnergyUsageTest {
         EnergyUsage energyUsage = new EnergyUsage();
         energyUsage.getHomeDataModel().setAppartmentSize(20);
         energyUsage.getHomeDataModel().setInhabitants(3);
-        assertEquals(6969, energyUsage.getEstimatedElectrickWhPerYear());
+        assertEquals(600, energyUsage.getEstimatedElectrickWhPerYear());
     }
 }
