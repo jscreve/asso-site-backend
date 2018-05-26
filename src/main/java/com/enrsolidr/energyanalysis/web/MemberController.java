@@ -2,10 +2,9 @@ package com.enrsolidr.energyanalysis.web;
 
 import com.enrsolidr.energyanalysis.entity.Member;
 import com.enrsolidr.energyanalysis.exceptions.UserAlreadyExistException;
+import com.enrsolidr.energyanalysis.model.Linky;
 import com.enrsolidr.energyanalysis.repository.MemberRepository;
-import com.enrsolidr.energyanalysis.resources.MemberResource;
-import com.enrsolidr.energyanalysis.resources.MemberResourceAssembler;
-import com.enrsolidr.energyanalysis.resources.SignUpResource;
+import com.enrsolidr.energyanalysis.resources.*;
 import com.enrsolidr.energyanalysis.services.MemberService;
 import com.enrsolidr.energyanalysis.services.UserService;
 import com.enrsolidr.energyanalysis.util.SecurityConstants;
@@ -16,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +62,9 @@ public class MemberController {
         }
 
         Member member = new Member();
+        Linky linky = new Linky();
+        linky.setActivated(false);
+        member.setLinky(linky);
         member.setUser(user.getUser());
         member.setUsername(user.getUsername());
         member.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
@@ -75,13 +79,54 @@ public class MemberController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/fetch", method = RequestMethod.GET)
-    public ResponseEntity<List<MemberResource>> fetchAll() {
+    @RequestMapping(method = RequestMethod.GET, path = "/fetch")
+    public ResponseEntity<OutputMemberResource> fetch() {
+        logger.info("Get member : {}");
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            String username = auth.getName();
+            Optional<Member> member = memberService.getMemberByUsername(username);
+            if (member.isPresent()) {
+                OutputMemberResourceAssembler resourceAssembler = new OutputMemberResourceAssembler(MemberController.class, OutputMemberResource.class);
+                OutputMemberResource resource = resourceAssembler.toResource(member.get());
+                return new ResponseEntity<OutputMemberResource>(resource, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<OutputMemberResource>(HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<OutputMemberResource>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/update")
+    public ResponseEntity<?> update(@RequestBody InputMemberResource inputMemberResource) throws Exception {
+        logger.info("Update member : {}");
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            String username = auth.getName();
+            Optional<Member> member = memberService.getMemberByUsername(username);
+            if (member.isPresent()) {
+                Member tempMember = member.get();
+                tempMember = InputMemberResource.fromResource(tempMember, inputMemberResource);
+                memberService.updateMember(tempMember);
+                return new ResponseEntity<OutputMemberResource>(HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<OutputMemberResource>(HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @RequestMapping(value = "/fetchAllMemberAndPayments", method = RequestMethod.GET)
+    public ResponseEntity<List<MemberAndPaymentsResource>> fetchAll() {
         logger.info("Get members : {}");
 
         List<Member> members = memberService.getMembersWithRole(SecurityConstants.MEMBER_ROLE);
-        MemberResourceAssembler resourceAssembler = new MemberResourceAssembler(MemberController.class, MemberResource.class);
-        List<MemberResource> resources = resourceAssembler.toResources(members);
-        return new ResponseEntity<List<MemberResource>>(resources, HttpStatus.OK);
+        MemberAndPaymentsResourceAssembler resourceAssembler = new MemberAndPaymentsResourceAssembler(MemberController.class, MemberAndPaymentsResource.class);
+        List<MemberAndPaymentsResource> resources = resourceAssembler.toResources(members);
+        return new ResponseEntity<List<MemberAndPaymentsResource>>(resources, HttpStatus.OK);
     }
 }

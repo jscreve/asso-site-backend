@@ -15,18 +15,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.enrsolidr.energyanalysis.util.SecurityConstants.HEADER_STRING;
 import static com.enrsolidr.energyanalysis.util.SecurityConstants.TOKEN_PREFIX;
-import static com.enrsolidr.energyanalysis.util.SecurityConstants.SECRET;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    public JWTAuthorizationFilter(AuthenticationManager authManager) {
+    private String SECRET;
+
+    public JWTAuthorizationFilter(AuthenticationManager authManager, String SECRET) {
         super(authManager);
+        this.SECRET = SECRET;
     }
 
     @Override

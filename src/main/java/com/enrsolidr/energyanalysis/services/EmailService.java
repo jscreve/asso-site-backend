@@ -1,5 +1,6 @@
 package com.enrsolidr.energyanalysis.services;
 
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailParseException;
@@ -13,8 +14,9 @@ import javax.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
+    @Setter
     @Autowired
-    public JavaMailSender emailSender;
+    private JavaMailSender emailSender;
 
     public void sendSimpleMessage(String from, String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();

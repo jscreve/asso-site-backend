@@ -28,6 +28,12 @@ public class MemberService {
         return list;
     }
 
+    public List<Member> getMembersWithLinky() {
+        List<Member> list = new ArrayList<>();
+        memberRepository.findByLinkyActivated(true).forEach(e -> list.add(e));
+        return list;
+    }
+
     public Optional<Member> getMemberByEmail(String email) {
         List<Member> members = memberRepository.findByUserEmail(email);
         if(members.size() > 0) {
@@ -83,5 +89,9 @@ public class MemberService {
         } else {
             memberRepository.insert(inputMember);
         }
+    }
+
+    public void updateMember(Member inputMember) throws Exception {
+        memberRepository.save(inputMember);
     }
 }

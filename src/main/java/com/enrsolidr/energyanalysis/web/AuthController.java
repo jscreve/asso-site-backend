@@ -12,6 +12,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.enrsolidr.energyanalysis.util.SecurityConstants.EXPIRATION_TIME;
-import static com.enrsolidr.energyanalysis.util.SecurityConstants.SECRET;
 
 @RestController
 @RequestMapping("/auth")
@@ -46,6 +46,9 @@ public class AuthController {
 
     @Autowired
     MemberService memberService;
+
+    @Value("${jwt.secret}")
+    private String SECRET;
 
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 

@@ -14,4 +14,6 @@ public interface MemberRepository extends MongoRepository<Member, Long> {
     List<Member> findByUsername(String name);
 
     List<Member> findByAuthoritiesIn(Collection<String> role);
+
+    List<Member> findByLinkyActivated(boolean activated);
 }

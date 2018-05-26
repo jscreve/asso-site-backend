@@ -21,7 +21,6 @@ public class EnergyUsageService {
     }
 
     public EnergyUsage saveEnergyUsage(EnergyUsage energyUsage) {
-        //energyUsage.setId(nextSequenceService.getNextSequence("EnergyUsage"));
         energyUsage = energyUsageRepository.save(energyUsage);
         return energyUsage;
     }

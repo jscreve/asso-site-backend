@@ -1,19 +1,23 @@
 package com.enrsolidr.energyanalysis.resources;
 
+import com.enrsolidr.energyanalysis.model.Linky;
 import com.enrsolidr.energyanalysis.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.ResourceSupport;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberResource extends ResourceSupport {
+public class OutputMemberResource extends ResourceSupport {
     private User user;
-    private Set<String> memberPayments;
+    private Linky linky;
+    private List<String> authorities;
+    private String username;
+    private String password;
 }
 
 

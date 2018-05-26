@@ -5,6 +5,7 @@ import com.enrsolidr.energyanalysis.entity.Payment;
 import com.enrsolidr.energyanalysis.exceptions.AlreadyPaidException;
 import com.enrsolidr.energyanalysis.exceptions.UserAlreadyExistException;
 import com.enrsolidr.energyanalysis.exceptions.UserNotFoundException;
+import com.enrsolidr.energyanalysis.model.Linky;
 import com.enrsolidr.energyanalysis.model.TransactionType;
 import com.enrsolidr.energyanalysis.resources.OutputPaymentResource;
 import com.enrsolidr.energyanalysis.resources.OutputPaymentResourceAssembler;
@@ -59,7 +60,7 @@ public class PaymentController {
     }
 
 
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
+    public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
     @RequestMapping(value = "/charge", method = RequestMethod.POST)
     public ResponseEntity<Charge> chargeCard(@RequestBody PaymentResource paymentResource) throws Exception {
@@ -105,6 +106,9 @@ public class PaymentController {
 
         Member member = new Member();
         member.setUser(paymentResource.getUser());
+        Linky linky = new Linky();
+        linky.setActivated(false);
+        member.setLinky(linky);
         member.setUsername(paymentResource.getUsername());
         member.setPassword(bCryptPasswordEncoder().encode(paymentResource.getPassword()));
         member.setAuthorities(Collections.singletonList(MEMBER_ROLE));

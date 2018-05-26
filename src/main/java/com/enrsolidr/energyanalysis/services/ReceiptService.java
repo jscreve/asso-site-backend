@@ -2,6 +2,7 @@ package com.enrsolidr.energyanalysis.services;
 
 import com.enrsolidr.energyanalysis.entity.Payment;
 import com.ibm.icu.text.RuleBasedNumberFormat;
+import lombok.Setter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
@@ -10,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -27,9 +28,11 @@ public class ReceiptService {
 
     private static final String receiptMailText = "Bonjour, voici votre reçu fiscal pour votre don à Watt4All. \nMerci pour tout !";
 
+    @Setter
     @Value("${receipt.destinationFolder}")
     private String destinationFolder;
 
+    @Setter
     @Value("${receipt.email.from}")
     private String emailFrom;
 
@@ -43,17 +46,26 @@ public class ReceiptService {
 
     private PDDocument pdfDocument;
 
-    public void sendReceipts(String year) throws IOException, ParseException {
+    public int sendReceipts(String year) throws IOException, ParseException {
         Map<Payment, String> paymentReceipts = getReceipts(year);
         Iterator<Map.Entry<Payment, String>> iterator = paymentReceipts.entrySet().iterator();
+        int numberOfReceipts = 0;
         while(iterator.hasNext()) {
             Map.Entry<Payment, String> entry = iterator.next();
             Payment payment = entry.getKey();
             String receipt = entry.getValue();
             emailService.sendMessageWithAttachment(emailFrom, payment.getUser().getEmail(), receiptMailObject, receiptMailText, receipt);
+            numberOfReceipts++;
         }
+        return numberOfReceipts;
     }
 
+    /**
+     * @param year
+     * @return map of payment and receipt path
+     * @throws IOException
+     * @throws ParseException
+     */
     private Map<Payment, String> getReceipts(String year) throws IOException, ParseException {
         String fromDate = "01/01/" + year;
         String toDate = "31/12/" + year;
@@ -66,6 +78,13 @@ public class ReceiptService {
                 .collect(Collectors.toMap(_i -> paymentsIterator.next(), _i -> fileIterator.next()));
     }
 
+    /**
+     * Generate receipts pdfs
+     *
+     * @param payments
+     * @return
+     * @throws IOException
+     */
     private List<String> generatePdfs(List<Payment> payments) throws IOException {
         int i = 0;
         List<String> outputFiles = new ArrayList<String>();
@@ -83,15 +102,22 @@ public class ReceiptService {
         return outputFiles;
     }
 
+    /**
+     * Generates the mapping fields for a receipt
+     *
+     * @param payment
+     * @param index
+     * @return
+     */
     private Map<String, String> generateDocumentMapping(Payment payment, int index) {
         Map<String, String> mapping = new HashMap<String, String>();
 
         mapping.put("z1", new Integer(index).toString());
 
         //asso
-        mapping.put("z2", "Watt4All");
-        mapping.put("z3", "33");
-        mapping.put("z4", "Bastion Saint André");
+        mapping.put("z2", "Maison des Associations");
+        mapping.put("z3", "72-74");
+        mapping.put("z4", "Royale");
         mapping.put("z5", "59000");
         mapping.put("z5b", "LILLE");
 
@@ -138,6 +164,13 @@ public class ReceiptService {
         return mapping;
     }
 
+    /**
+     * replace mapping in a pdf file
+     *
+     * @param values
+     * @param outputFile
+     * @throws IOException
+     */
     private void replaceInPdf(Map<String, String> values, String outputFile) throws IOException {
         // as there might not be an AcroForm entry a null check is necessary
         if (acroForm != null) {

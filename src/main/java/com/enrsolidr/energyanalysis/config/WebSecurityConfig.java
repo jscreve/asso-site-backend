@@ -2,6 +2,7 @@ package com.enrsolidr.energyanalysis.config;
 
 import com.enrsolidr.energyanalysis.filter.JWTAuthorizationFilter;
 import com.enrsolidr.energyanalysis.services.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserService userService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Value("${jwt.secret}")
+    private String SECRET;
+
     public WebSecurityConfig(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -32,10 +36,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, ALLOWED_URLS).permitAll()
+                .antMatchers(HttpMethod.GET, ALLOWED_URLS).permitAll()
                 .antMatchers(HttpMethod.DELETE, ALLOWED_URLS).permitAll()
                 .anyRequest().hasAuthority(ADMIN_ROLE)
                 .and()
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), SECRET))
                 // this disables session creation on Spring Security
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

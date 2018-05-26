@@ -1,10 +1,12 @@
 package com.enrsolidr.energyanalysis.entity;
 
+import com.enrsolidr.energyanalysis.model.Linky;
 import com.enrsolidr.energyanalysis.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Column;
@@ -21,6 +23,7 @@ public class Member {
     private String id;
 
     @Column
+    @Indexed(unique = true)
     private String username;
 
     @Column
@@ -30,6 +33,8 @@ public class Member {
     private List<String> authorities;
 
     private User user;
+
+    private Linky linky;
     //organized by year
     private Set<String> memberPayments = new HashSet<String>();
 }
