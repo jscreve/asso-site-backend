@@ -28,9 +28,10 @@ public class LinkyComputeService {
         return computePreviousDayEnergyUse(username, password, Calendar.getInstance());
     }
 
-    public Double computePreviousDayEnergyUse(String username, String password, Calendar calStartDate) throws Exception {
+    public Double computePreviousDayEnergyUse(String username, String password, Calendar fromDate) throws Exception {
         RestTemplateWithCookies restTemplateWithCookies = new RestTemplateWithCookies();
         linkyDataService.login(username, password, restTemplateWithCookies);
+        Calendar calStartDate = (Calendar) fromDate.clone();
         calStartDate.add(Calendar.DAY_OF_MONTH, -1);
         calStartDate.set(Calendar.HOUR_OF_DAY, 0);
         calStartDate.set(Calendar.MINUTE, 0);
@@ -50,7 +51,7 @@ public class LinkyComputeService {
                     powerUsageList.put(sDate, powerUsage);
                     calStartDate.add(Calendar.DAY_OF_MONTH, 1);
                 });
-                Calendar calPreviousDay = Calendar.getInstance();
+                Calendar calPreviousDay = (Calendar) fromDate.clone();
                 calPreviousDay.add(Calendar.DAY_OF_MONTH, -1);
                 String sYesterday = dateFormat.format(calPreviousDay.getTime());
                 return powerUsageList.get(sYesterday);
